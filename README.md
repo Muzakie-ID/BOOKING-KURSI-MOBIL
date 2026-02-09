@@ -88,6 +88,16 @@ Jika ingin mengembangkan di local (Laragon/XAMPP):
 3. `php artisan migrate`
 4. `php artisan serve`
 
+## Troubleshooting
+
+### Error: Permission denied (storage/framework/views)
+
+Jika Anda menemui error `file_put_contents(...): Failed to open stream: Permission denied` saat mengakses aplikasi, hal ini disebabkan user web server di dalam container tidak memiliki hak akses tulis ke folder storage. Jalankan perintah berikut untuk memperbaikinya:
+
+```bash
+docker compose exec app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+```
+
 ## Lisensi
 
 Private Property.
