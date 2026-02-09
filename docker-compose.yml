@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: booking-kursi-app
+    container_name: booking_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - /root/BOOKING-KURSI-MOBIL:/var/www
+    networks:
+      - booking_network
+      - db_master_shared
+
+  nginx:
+    image: nginx:alpine
+    container_name: booking_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - /root/BOOKING-KURSI-MOBIL:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - booking_network
+
+networks:
+  booking_network:
+    driver: bridge
+  db_master_shared:
+    external: true
