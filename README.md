@@ -105,6 +105,21 @@ Jika Anda menemui error `file_put_contents(...): Failed to open stream: Permissi
 docker compose exec app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 ```
 
+### Warning: "The information you’re about to submit is not secure"
+
+Jika muncul peringatan keamanan saat login/submit form di server Production (HTTPS), pastikan konfigurasi `.env` Anda sudah benar:
+
+```env
+APP_ENV=production
+APP_URL=https://domain-anda.com
+```
+
+Aplikasi akan memaksa penggunaan HTTPS saat `APP_ENV` diset ke `production`. Jangan lupa hapus cache config setelah mengubah `.env`:
+
+```bash
+docker compose exec app php artisan config:clear
+```
+
 ## Lisensi
 
 Private Property.
