@@ -65,6 +65,7 @@
                             <input type="text" 
                                    name="new_points[]" 
                                    x-model="point.name"
+                                   x-bind:value="point.name"
                                    class="flex-1 px-4 py-2 border rounded-lg focus:ring-blue-500 text-sm" 
                                    placeholder="Lokasi Baru (Wajib Diisi)" required>
                             

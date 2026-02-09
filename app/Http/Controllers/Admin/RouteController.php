@@ -101,6 +101,15 @@ class RouteController extends Controller
                     $route->dropOffPoints()->create(['name' => $name]);
                 }
             }
+        } else {
+            // Fallback for direct input (if array logic fails in some clients)
+             if ($request->has('new_points') && is_array($request->new_points)) {
+                foreach ($request->new_points as $name) {
+                     if (!empty($name)) {
+                        $route->dropOffPoints()->create(['name' => $name]);
+                    }
+                }
+             }
         }
 
         // 3. Handle deletions (Points not present in the 'points' array are processed for deletion)
