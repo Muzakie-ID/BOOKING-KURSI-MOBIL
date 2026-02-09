@@ -27,7 +27,7 @@
         <div class="lg:col-span-1 space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="font-bold text-lg text-gray-800">Penumpang Pending</h2>
-                <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded">{{ $pendingBookings->count() }} Org</span>
+                <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded">{{ $pendingBookings->sum('quantity') }} Org</span>
             </div>
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden min-h-[400px]">
@@ -38,8 +38,9 @@
                 @else
                     <ul class="divide-y divide-gray-100">
                         @foreach($pendingBookings->groupBy(fn($b) => $b->route->origin . ' ➝ ' . $b->route->destination) as $routeName => $bookings)
-                        <li class="px-4 py-2 bg-blue-50/50 border-b border-gray-100 text-[10px] font-extrabold text-blue-800 uppercase tracking-widest sticky top-0">
-                            {{ $routeName }}
+                        <li class="px-4 py-2 bg-blue-50/50 border-b border-gray-100 text-[10px] font-extrabold text-blue-800 uppercase tracking-widest sticky top-0 flex justify-between items-center">
+                            <span>{{ $routeName }}</span>
+                            <span class="bg-blue-100 text-blue-800 px-1.5 rounded">{{ $bookings->sum('quantity') }}</span>
                         </li>
                         @foreach($bookings as $booking)
                         <li class="p-3 hover:bg-gray-50 cursor-pointer transition select-none flex items-start gap-3" 
