@@ -1,59 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Application Booking Kursi Travel (Mobil)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem pemesanan tiket travel berbasis web dengan fitur manajemen armada, pengaturan kursi dinamis, dan grouping penumpang.
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Cek Jadwal & Ketersediaan**: Pencarian jadwal berdasarkan Rute (Asal - Tujuan) dan Tanggal.
+- **Seat Selection UI**:
+  - Visualisasi layout kursi sesuai tipe mobil (HiAce, Avanza, dll).
+  - Indikator posisi "SOPIR" (Driver) yang jelas.
+  - Status kursi Real-time (Available, Booked, Check-in).
+  - Support pemilihan kursi group/rombongan.
+- **Manajemen Armada (Admin)**:
+  - Input data mobil & plat nomor.
+  - Pengaturan baris & kolom kursi dinamis (JSON based).
+- **Manajemen Jadwal (Admin)**:
+  - Pooling system: Penumpang masuk ke "Pool" sebelum di-assign ke armada.
+  - Opsi menambahkan penumpang ke jadwal yang sudah berjalan (jika kapasitas tersedia).
+- **Dashboard Admin**:
+  - Statistik booking hari ini & besok.
+  - Quick Actions.
+- **Pengaturan**:
+  - Setup nomor WhatsApp Admin dinamis untuk link konfirmasi/bantuan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework**: Laravel 12
+- **Database**: MySQL 8
+- **Frontend**: Blade, Tailwind CSS, Alpine.js
+- **Infrastructure**: Docker & Nginx
 
-## Learning Laravel
+## Cara Install (Deployment)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Aplikasi ini sudah dikonfigurasi menggunakan Docker untuk kemudahan deployment.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clone Repository
 
-## Laravel Sponsors
+```bash
+cd /root
+git clone https://github.com/Muzakie-ID/BOOKING-KURSI-MOBIL.git
+cd BOOKING-KURSI-MOBIL
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Konfigurasi Environment
 
-### Premium Partners
+Copy file `.env.example` dan sesuaikan konfigurasinya:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+cp .env.example .env
+nano .env
+```
 
-## Contributing
+Pastikan pengaturan database di `.env` sesuai dengan server database Anda. Jika menggunakan network docker `db_master_shared` (sesuai `docker-compose.yml`), pastikan host DB mengarah ke service database yang benar.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Jalankan Docker
 
-## Code of Conduct
+Bangun dan jalankan container:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+docker compose up -d --build
+```
 
-## Security Vulnerabilities
+### 4. Setup Aplikasi (Pertama Kali)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Masuk ke container aplikasi untuk instalasi dependencies dan migrasi database:
 
-## License
+```bash
+# Masuk ke container
+docker compose exec app bash
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Di dalam container jalankan:
+composer install --optimize-autoloader --no-dev
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+exit
+```
+
+### 5. Akses Aplikasi
+
+Buka browser dan akses IP server atau domain yang telah dikonfigurasi.
+
+## Pengembangan Lokal
+
+Jika ingin mengembangkan di local (Laragon/XAMPP):
+1. `composer install`
+2. `npm install && npm run build` (jika ada assets)
+3. `php artisan migrate`
+4. `php artisan serve`
+
+## Lisensi
+
+Private Property.
