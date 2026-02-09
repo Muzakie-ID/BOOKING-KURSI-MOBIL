@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(AdminUserSeeder::class);
+
         // Routes
         $r1 = \App\Models\Route::create([
             'origin' => 'Semarang',

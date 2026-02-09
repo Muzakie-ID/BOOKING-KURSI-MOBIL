@@ -76,6 +76,13 @@ php artisan storage:link
 exit
 ```
 
+### Akun Admin Default (Seeder)
+
+Jika Anda menjalankan seed (`php artisan migrate --seed`), akun admin berikut akan dibuat:
+
+- **Email**: `admin@travel.com`
+- **Password**: `password123`
+
 ### 5. Akses Aplikasi
 
 Buka browser dan akses IP server atau domain yang telah dikonfigurasi.
