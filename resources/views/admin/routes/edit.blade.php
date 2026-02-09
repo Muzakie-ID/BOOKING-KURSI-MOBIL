@@ -47,12 +47,11 @@
                     <!-- Existing Points -->
                     <template x-for="(point, index) in existingPoints" :key="'existing-' + index">
                         <div class="flex items-center gap-2">
-                            <input type="hidden" :name="'points[' + point.id + ']'" :value="point.name">
                             <input type="text" 
                                    x-model="point.name"
                                    :name="'points[' + point.id + ']'"
                                    class="flex-1 px-4 py-2 border rounded-lg focus:ring-blue-500 text-sm bg-white" 
-                                   placeholder="Nama Lokasi">
+                                   placeholder="Nama Lokasi" required>
                             
                             <button type="button" @click="removeExistingPoint(index)" class="text-red-400 hover:text-red-600 p-2" title="Hapus Lokasi">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -64,7 +63,7 @@
                     <template x-for="(point, index) in newPoints" :key="'new-' + index">
                         <div class="flex items-center gap-2">
                             <input type="text" 
-                                   :name="'new_points[]'" 
+                                   name="new_points[]" 
                                    x-model="point.name"
                                    class="flex-1 px-4 py-2 border rounded-lg focus:ring-blue-500 text-sm" 
                                    placeholder="Lokasi Baru (Wajib Diisi)" required>
