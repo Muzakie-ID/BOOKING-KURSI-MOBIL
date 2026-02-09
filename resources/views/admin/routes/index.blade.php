@@ -25,14 +25,15 @@
     @endif
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table class="w-full text-left text-sm text-gray-500">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-gray-500">
             <thead class="bg-gray-50 text-gray-900 font-semibold border-b">
                 <tr>
-                    <th class="px-6 py-4">Asal</th>
-                    <th class="px-6 py-4">Tujuan</th>
-                    <th class="px-6 py-4">Estimasi Harga</th>
-                    <th class="px-6 py-4 text-center">Titik Antar</th>
-                    <th class="px-6 py-4 text-right">Aksi</th>
+                    <th class="px-6 py-4 whitespace-nowrap">Asal</th>
+                    <th class="px-6 py-4 whitespace-nowrap">Tujuan</th>
+                    <th class="px-6 py-4 whitespace-nowrap">Estimasi Harga</th>
+                    <th class="px-6 py-4 text-center whitespace-nowrap">Titik Antar</th>
+                    <th class="px-6 py-4 text-right whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -67,6 +68,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection
