@@ -38,12 +38,13 @@
                 @else
                     <ul class="divide-y divide-gray-100">
                         @foreach($pendingBookings->groupBy(fn($b) => $b->route->origin . ' ➝ ' . $b->route->destination) as $routeName => $bookings)
-                        <li class="px-4 py-2 bg-blue-50/50 border-b border-gray-100 text-[10px] font-extrabold text-blue-800 uppercase tracking-widest sticky top-0 flex justify-between items-center">
+                        @php $routeId = $bookings->first()->route_id; @endphp
+                        <li x-show="!selectedRouteFilter || selectedRouteFilter == '{{ $routeId }}'" class="px-4 py-2 bg-blue-50/50 border-b border-gray-100 text-[10px] font-extrabold text-blue-800 uppercase tracking-widest sticky top-0 flex justify-between items-center">
                             <span>{{ $routeName }}</span>
                             <span class="bg-blue-100 text-blue-800 px-1.5 rounded">{{ $bookings->sum('quantity') }}</span>
                         </li>
                         @foreach($bookings as $booking)
-                        <li class="p-3 hover:bg-gray-50 cursor-pointer transition select-none flex items-start gap-3" 
+                        <li x-show="!selectedRouteFilter || selectedRouteFilter == '{{ $routeId }}'" class="p-3 hover:bg-gray-50 cursor-pointer transition select-none flex items-start gap-3" 
                             @click="toggleSelection({{ $booking->id }}, {{ $booking->quantity }}, '{{ $booking->user_name }}')">
                             
                             <!-- Checkbox Fake UI -->
@@ -100,7 +101,8 @@
                         <!-- Rute -->
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Rute</label>
-                            <select name="route_id" required class="w-full rounded-xl border-gray-300 text-sm py-2.5">
+                            <select name="route_id" x-model="selectedRouteFilter" required class="w-full rounded-xl border-gray-300 text-sm py-2.5">
+                                <option value="">Semua Rute</option>
                                 @foreach($routes as $r)
                                     <option value="{{ $r->id }}">{{ $r->origin }} -> {{ $r->destination }}</option>
                                 @endforeach
@@ -245,6 +247,7 @@
 <script>
     function scheduleManager() {
         return {
+            selectedRouteFilter: '',
             selectedIds: [],
             totalSelectedQuery: 0,
             selectedFleetId: '',
