@@ -37,7 +37,11 @@
                     </div>
                 @else
                     <ul class="divide-y divide-gray-100">
-                        @foreach($pendingBookings as $booking)
+                        @foreach($pendingBookings->groupBy(fn($b) => $b->route->origin . ' ➝ ' . $b->route->destination) as $routeName => $bookings)
+                        <li class="px-4 py-2 bg-blue-50/50 border-b border-gray-100 text-[10px] font-extrabold text-blue-800 uppercase tracking-widest sticky top-0">
+                            {{ $routeName }}
+                        </li>
+                        @foreach($bookings as $booking)
                         <li class="p-3 hover:bg-gray-50 cursor-pointer transition select-none flex items-start gap-3" 
                             @click="toggleSelection({{ $booking->id }}, {{ $booking->quantity }}, '{{ $booking->user_name }}')">
                             
@@ -52,14 +56,13 @@
                                     <h4 class="font-bold text-gray-900 text-sm">{{ $booking->user_name }}</h4>
                                     <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-1.5 py-0.5 rounded">{{ $booking->quantity }} Kursi</span>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    {{ $booking->route->origin }} ➝ {{ $booking->route->destination }}
-                                </p>
-                                <p class="text-xs text-gray-400 mt-0.5 truncate w-48">
+                                <!-- Route info moved to header -->
+                                <p class="text-xs text-gray-400 mt-1 truncate w-48">
                                     📍 {{ $booking->pickup_location }}
                                 </p>
                             </div>
                         </li>
+                        @endforeach
                         @endforeach
                     </ul>
                 @endif
@@ -164,9 +167,17 @@
             <!-- 2. List Jadwal yang Sudah Dibuat -->
             @if($existingSchedules->count() > 0)
             <h3 class="font-bold text-gray-800 text-lg pt-4">Jadwal Terbentuk</h3>
-            <div class="space-y-4">
-                @foreach($existingSchedules as $sched)
-                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+            <div class="space-y-8">
+                @foreach($existingSchedules->groupBy(fn($s) => $s->route->origin . ' ➝ ' . $s->route->destination) as $routeName => $schedules)
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="w-2 h-8 bg-blue-500 rounded-r"></span>
+                        <h4 class="font-bold text-gray-700 text-sm">{{ $routeName }}</h4>
+                        <span class="text-xs text-gray-400 font-medium">({{ $schedules->count() }} Jadwal)</span>
+                    </div>
+                    <div class="space-y-4 pl-4 border-l-2 border-gray-100 ml-1">
+                        @foreach($schedules as $sched)
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <h4 class="font-bold text-gray-900 flex items-center gap-2">
@@ -217,6 +228,9 @@
                                 Kapasitas tidak cukup (Sisa: {{ $remaining }}, Dipilih: <span x-text="totalSelectedQuery"></span>)
                             </span>
                         </div>
+                    </div>
+                </div>
+                        @endforeach
                     </div>
                 </div>
                 @endforeach
