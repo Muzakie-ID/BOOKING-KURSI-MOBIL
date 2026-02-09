@@ -94,37 +94,35 @@ class RouteController extends Controller
             }
         }
 
-        // 2. Create new points
-        if ($request->filled('new_points')) {
-            foreach ($request->new_points as $name) {
-                if (!empty($name)) {
-                    $route->dropOffPoints()->create(['name' => $name]);
-                }
-            }
-        } else {
-            // Fallback for direct input (if array logic fails in some clients)
-             if ($request->has('new_points') && is_array($request->new_points)) {
-                foreach ($request->new_points as $name) {
-                     if (!empty($name)) {
-                        $route->dropOffPoints()->create(['name' => $name]);
-                    }
-                }
-             }
-        }
-
-        // 3. Handle deletions (Points not present in the 'points' array are processed for deletion)
-        // Collect all IDs sent in the request
+        // 2. Handle deletions (Move this BEFORE creating new points)
+        // Collect all IDs sent in the request (existing points only)
         $submittedIds = $request->filled('points') ? array_keys($request->points) : [];
         
         // Find points in DB that belong to this route but are NOT in submitted IDs
+        // This ensures we only delete OLD points that were removed from the UI
         $pointsToDelete = $route->dropOffPoints()->whereNotIn('id', $submittedIds)->get();
 
         foreach ($pointsToDelete as $point) {
             try {
                 $point->delete();
             } catch (\Exception $e) {
-                // Ignore delete errors (constraint violations) silently for now, or use flash message
-                // For better UX, we'd tell them "Some points couldn't be deleted because they are in use"
+                // Ignore delete errors
+            }
+        }
+
+        // 3. Create new points
+        if ($request->filled('new_points')) {
+            foreach ($request->new_points as $name) {
+                if (!empty($name)) {
+                    $route->dropOffPoints()->create(['name' => $name]);
+                }
+            }
+        } elseif ($request->has('new_points') && is_array($request->new_points)) {
+            // Fallback for direct input
+            foreach ($request->new_points as $name) {
+                 if (!empty($name)) {
+                    $route->dropOffPoints()->create(['name' => $name]);
+                }
             }
         }
 
