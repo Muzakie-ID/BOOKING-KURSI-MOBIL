@@ -197,13 +197,51 @@
 
                     <!-- Passenger List inside Schedule -->
                     <div class="bg-gray-50 rounded-lg p-3">
-                        <p class="text-xs font-bold text-gray-400 uppercase mb-2">Penumpang</p>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach($sched->bookings as $sb)
-                                <span class="inline-flex items-center px-2 py-1 rounded bg-white border border-gray-200 text-xs text-gray-600 shadow-sm">
-                                    {{ $sb->user_name }} ({{ $sb->quantity }})
-                                </span>
-                            @endforeach
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                Manifest Penumpang
+                            </p>
+                            <span class="text-[10px] text-gray-400">{{ $sched->bookings->count() }} Transaksi</span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            @forelse($sched->bookings as $sb)
+                                <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm text-xs relative group hover:border-blue-200 transition">
+                                    <div class="flex justify-between font-bold text-gray-700 mb-2">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full {{ $sb->status == 'confirmed' ? 'bg-green-500' : 'bg-yellow-400' }}"></span>
+                                            {{ $sb->user_name }}
+                                        </div>
+                                        <span class="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-100">{{ $sb->quantity }} Kursi</span>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-3 mb-2">
+                                        <div>
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Jemput</span>
+                                            <span class="text-gray-600 leading-tight block">{{ $sb->pickup_location }}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Turun</span>
+                                            <span class="text-blue-600 font-medium leading-tight block">{{ $sb->dropOffPoint->name ?? '-' }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-2 border-t border-gray-100 flex justify-between items-center text-[10px] text-gray-400">
+                                         <div class="flex items-center gap-2">
+                                            <span class="flex items-center gap-1" title="Telepon">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                                {{ $sb->user_phone }}
+                                            </span>
+                                            <span class="w-px h-3 bg-gray-200"></span>
+                                            <span>{{ $sb->payment_method }}</span>
+                                         </div>
+                                         <span class="text-gray-300">#{{ $sb->code }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-4 text-gray-400 italic">Belum ada penumpang assigned.</div>
+                            @endforelse
                         </div>
                     </div>
 

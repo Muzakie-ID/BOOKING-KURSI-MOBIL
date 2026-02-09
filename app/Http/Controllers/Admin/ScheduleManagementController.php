@@ -39,7 +39,7 @@ class ScheduleManagementController extends Controller
         
         // Existing Schedules for this date
         $existingSchedules = Schedule::whereDate('date', $date)
-                            ->with(['fleet', 'bookings', 'route'])
+                            ->with(['fleet', 'bookings.dropOffPoint', 'route'])
                             ->get();
 
         $fleets = Fleet::all();
