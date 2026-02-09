@@ -17,7 +17,7 @@ class ScheduleManagementController extends Controller
     public function index()
     {
         $dates = Booking::where('status', 'pending')
-                    ->select('travel_date', DB::raw('count(*) as total'))
+                    ->select('travel_date', DB::raw('SUM(quantity) as total'))
                     ->groupBy('travel_date')
                     ->orderBy('travel_date')
                     ->get();
