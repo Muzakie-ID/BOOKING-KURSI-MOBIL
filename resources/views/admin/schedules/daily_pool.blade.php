@@ -223,7 +223,7 @@
                                         </div>
                                         <div class="text-right">
                                             <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Turun</span>
-                                            <span class="text-blue-600 font-medium leading-tight block">{{ $sb->dropOffPoint->name ?? '-' }}</span>
+                                            <span class="text-blue-600 font-medium leading-tight block">{{ $sb->drop_off_location ?? '-' }}</span>
                                         </div>
                                     </div>
 

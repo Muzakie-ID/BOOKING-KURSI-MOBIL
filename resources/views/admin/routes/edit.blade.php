@@ -40,48 +40,6 @@
                 </div>
             </div>
 
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Titik Antar (Drop Off Points)</label>
-                <div class="space-y-3 bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
-                    
-                    <!-- Existing Points -->
-                    <template x-for="(point, index) in existingPoints" :key="'existing-' + index">
-                        <div class="flex items-center gap-2">
-                            <input type="text" 
-                                   x-model="point.name"
-                                   :name="'points[' + point.id + ']'"
-                                   class="flex-1 px-4 py-2 border rounded-lg focus:ring-blue-500 text-sm bg-white" 
-                                   placeholder="Nama Lokasi" required>
-                            
-                            <button type="button" @click="removeExistingPoint(index)" class="text-red-400 hover:text-red-600 p-2" title="Hapus Lokasi">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </div>
-                    </template>
-
-                    <!-- New Points -->
-                    <template x-for="(point, index) in newPoints" :key="'new-' + index">
-                        <div class="flex items-center gap-2">
-                            <input type="text" 
-                                   name="new_points[]" 
-                                   x-model="point.name"
-                                   x-bind:value="point.name"
-                                   class="flex-1 px-4 py-2 border rounded-lg focus:ring-blue-500 text-sm" 
-                                   placeholder="Lokasi Baru (Wajib Diisi)" required>
-                            
-                            <button type="button" @click="removeNewPoint(index)" class="text-red-400 hover:text-red-600 p-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </div>
-                    </template>
-                    
-                </div>
-                <button type="button" @click="addNewPoint()" class="mt-3 text-sm text-blue-600 font-medium hover:text-blue-800 flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Tambah Lokasi
-                </button>
-            </div>
-
             <div class="pt-6 border-t mt-6 flex justify-end gap-3">
                 <a href="{{ route('admin.routes.index') }}" class="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg">Batal</a>
                 <button type="submit" class="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-sm transition">
@@ -95,22 +53,7 @@
 <script>
 function routeEditForm() {
     return {
-        existingPoints: @json($route->dropOffPoints),
-        newPoints: [],
-        
-        addNewPoint() {
-            this.newPoints.push({ name: '' });
-        },
-        removeNewPoint(index) {
-            this.newPoints.splice(index, 1);
-        },
-        removeExistingPoint(index) {
-            // In a real app, you might want to mark for deletion instead of removing from DOM immediately
-            // But our Controller handles "missing IDs" as deletions, so removing from DOM is correct.
-            if(confirm('Lokasi akan dihapus setelah disimpan. Lanjutkan?')) {
-                this.existingPoints.splice(index, 1);
-            }
-        }
+        // No logic needed
     }
 }
 </script>

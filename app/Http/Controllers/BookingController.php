@@ -13,8 +13,9 @@ class BookingController extends Controller
 {
     public function index()
     {
-        $routes = Route::with('dropOffPoints')->get();
-        return view('booking.form', compact('routes'));
+        $routes = Route::all();
+        $bookingInfo = Setting::where('key', 'booking_info_text')->value('value');
+        return view('booking.form', compact('routes', 'bookingInfo'));
     }
 
     public function store(Request $request)
@@ -26,7 +27,7 @@ class BookingController extends Controller
             'user_name' => 'required|string|max:255',
             'user_phone' => 'required|string|max:20',
             'pickup_location' => 'required|string',
-            'drop_off_point_id' => 'required|exists:drop_off_points,id',
+            'drop_off_location' => 'required|string',
             'payment_method' => 'required|string'
         ]);
 
@@ -41,7 +42,8 @@ class BookingController extends Controller
                 'user_name' => $request->user_name,
                 'user_phone' => $request->user_phone,
                 'pickup_location' => $request->pickup_location,
-                'drop_off_point_id' => $request->drop_off_point_id,
+                'drop_off_location' => $request->drop_off_location,
+                'drop_off_point_id' => null,
                 'quantity' => $request->quantity,
                 'total_price' => null, // Admin sets final price
                 'payment_method' => $request->payment_method,
@@ -51,7 +53,6 @@ class BookingController extends Controller
 
         // Generate WhatsApp Message
         $route = Route::find($request->route_id);
-        $dropOff = DropOffPoint::find($request->drop_off_point_id);
         
         $message = "Halo Admin, saya ingin memesan travel:\n\n";
         $message .= "🆔 Kode          : *" . $booking->code . "*\n";
@@ -60,7 +61,7 @@ class BookingController extends Controller
         $message .= "🚌 Rute          : " . $route->origin . " -> " . $route->destination . "\n";
         $message .= "👥 Jml Penumpang : " . $request->quantity . " Orang\n";
         $message .= "🏠 Jemput        : " . $request->pickup_location . "\n";
-        $message .= "📍 Turun         : " . $dropOff->name . "\n";
+        $message .= "📍 Turun         : " . $request->drop_off_location . "\n";
         $message .= "💳 Pembayaran    : " . $request->payment_method . "\n\n";
         $message .= "Mohon konfirmasi ketersediaan armada. Terima kasih.";
 

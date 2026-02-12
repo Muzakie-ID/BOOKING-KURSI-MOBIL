@@ -67,26 +67,16 @@
 
             <!-- 3. Lokasi -->
             <div class="space-y-4">
-                <!-- Drop Off (Lokasi Turun) -->
-                <div class="space-y-1">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Lokasi Turun (Tujuan)</label>
-                    <div class="relative">
-                        <select name="drop_off_point_id" :disabled="!selectedRouteId" class="block w-full rounded-xl border-gray-200 bg-gray-50 py-3 pl-4 pr-10 text-gray-800 font-medium focus:border-blue-500 focus:bg-white focus:ring-0 transition-all cursor-pointer disabled:opacity-50 appearance-none">
-                            <option value="" disabled selected>Pilih Tujuan Turun</option>
-                            <template x-for="point in currentDropOffs" :key="point.id">
-                                <option :value="point.id" x-text="point.name"></option>
-                            </template>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Pickup (Jemput Manual) -->
                 <div class="space-y-1">
                     <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Lokasi Jemput (Lengkap)</label>
                     <textarea name="pickup_location" rows="2" placeholder="Contoh: Depan Indomaret Point, Jl. Pemuda..." class="block w-full rounded-xl border-gray-200 bg-gray-50 py-3 px-4 text-gray-800 font-medium focus:border-blue-500 focus:bg-white focus:ring-0 transition-all text-sm"></textarea>
+                </div>
+
+                <!-- Drop Off (Lokasi Turun) -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Lokasi Turun (Tujuan)</label>
+                    <textarea name="drop_off_location" rows="2" placeholder="Contoh: Alun-alun Kota, Hotel Bahagia..." class="block w-full rounded-xl border-gray-200 bg-gray-50 py-3 px-4 text-gray-800 font-medium focus:border-blue-500 focus:bg-white focus:ring-0 transition-all text-sm"></textarea>
                 </div>
             </div>
             
@@ -132,7 +122,34 @@
             </div>
         </form>
     </div>
+
+    <!-- Info Section -->
+    @if(!empty($bookingInfo))
+    <div class="mt-6 p-5 bg-blue-50 border border-blue-100 rounded-xl">
+        <h3 class="font-semibold text-blue-900 text-sm mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Informasi Penting
+        </h3>
+        
+        <!-- Rich Text Value -->
+        <div class="prose-content text-sm text-blue-800/80 leading-relaxed">
+            {!! $bookingInfo !!}
+        </div>
+    </div>
+    @endif
 </div>
+
+<style>
+    /* Restore styles for Rich Text Content inside Tailwind */
+    .prose-content ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    .prose-content ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    .prose-content li { margin-bottom: 0.25rem; }
+    .prose-content strong { font-weight: 700; color: #1e3a8a; } /* blue-900 */
+    .prose-content em { font-style: italic; }
+    .prose-content p { margin-bottom: 0.75rem; }
+    .prose-content p:last-child { margin-bottom: 0; }
+    .prose-content blockquote { border-left: 3px solid #bfdbfe; padding-left: 1rem; font-style: italic; }
+</style>
 
 <script>
     function bookingForm() {
@@ -141,22 +158,18 @@
             quantity: 1,
             // Inject Data from Backend
             routes: @json($routes),
-            currentDropOffs: [],
             priceEstimate: '',
 
             updateDropOffs() {
                 // Determine drop offs based on selected Route
                 const route = this.routes.find(r => r.id == this.selectedRouteId);
                 if (route) {
-                    this.currentDropOffs = route.drop_off_points;
-                    
                     // Format price nicely
                     const min = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: 3 }).format(route.price_estimate_min);
                     const max = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: 3 }).format(route.price_estimate_max);
                     
                     this.priceEstimate = `${min} - ${max}`;
                 } else {
-                    this.currentDropOffs = [];
                     this.priceEstimate = '';
                 }
             }
