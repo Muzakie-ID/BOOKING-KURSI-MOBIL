@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            //
+            $table->string('drop_off_location')->nullable()->after('pickup_location');
+            $table->foreignId('drop_off_point_id')->nullable()->change();
         });
     }
 
@@ -22,7 +23,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            //
+            $table->dropColumn('drop_off_location');
+            // Assuming drop_off_point_id was NOT nullable before
+            //$table->foreignId('drop_off_point_id')->nullable(false)->change(); 
         });
     }
 };
