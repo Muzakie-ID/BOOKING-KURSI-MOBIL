@@ -38,7 +38,10 @@
                     <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Tanggal</label>
                     <input type="date" name="date" required 
                            min="{{ date('Y-m-d') }}"
+                           x-model="date"
+                           @change="validateDate"
                            class="block w-full rounded-xl border-gray-200 bg-gray-50 py-3 px-4 text-gray-800 font-medium focus:border-blue-500 focus:bg-white focus:ring-0 transition-all text-sm">
+                    <p x-show="dateError" x-text="dateError" class="text-xs text-red-500 mt-1"></p>
                 </div>
                 
                 <!-- Jumlah Penumpang (Stepper) -->
@@ -156,9 +159,33 @@
         return {
             selectedRouteId: '',
             quantity: 1,
+            date: '',
+            dateError: '',
             // Inject Data from Backend
             routes: @json($routes),
             priceEstimate: '',
+
+            validateDate() {
+                if (!this.date) return;
+                
+                // Parse date manually to avoid timezone issues
+                const parts = this.date.split('-');
+                const d = new Date(parts[0], parts[1] - 1, parts[2]); 
+                const day = d.getDay(); // 0 = Sunday, 1 = Monday, ... 5 = Friday, 6 = Saturday
+                
+                // Allow only Friday (5), Saturday (6), Sunday (0)
+                if (day !== 5 && day !== 6 && day !== 0) {
+                    this.dateError = 'Maaf, jadwal hanya tersedia hari Jumat, Sabtu, dan Minggu.';
+                    this.date = ''; // Reset input
+                    
+                    // Disappear error after 3 seconds
+                    setTimeout(() => {
+                        this.dateError = '';
+                    }, 4000);
+                } else {
+                    this.dateError = '';
+                }
+            },
 
             updateDropOffs() {
                 // Determine drop offs based on selected Route

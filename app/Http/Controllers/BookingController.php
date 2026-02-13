@@ -22,7 +22,18 @@ class BookingController extends Controller
     {
         $request->validate([
             'route_id' => 'required|exists:routes,id',
-            'date' => 'required|date|after_or_equal:today',
+            'date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    $dayOfWeek = date('N', strtotime($value));
+                    // 5 = Friday, 6 = Saturday, 7 = Sunday
+                    if (!in_array($dayOfWeek, [5, 6, 7])) {
+                        $fail('Pemesanan hanya tersedia untuk hari Jumat, Sabtu, dan Minggu.');
+                    }
+                },
+            ],
             'quantity' => 'required|integer|min:1|max:10',
             'user_name' => 'required|string|max:255',
             'user_phone' => 'required|string|max:20',
